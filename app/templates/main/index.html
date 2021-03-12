@@ -1,0 +1,17 @@
+{# main.index #}
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+{% block page_content %}
+    <div class="posts col-lg-6 col-lg-offset-1">
+        <div class=" col-lg-offset-3"><h1 >欢迎来到人文博客</h1></div><br>
+         {% include "_posts.html" %}
+    </div>
+    {% include "_aside.html" %}
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/post.css') }}">
+{% endblock %}
+
+
+

@@ -1,0 +1,270 @@
+{% macro pagination_widget_main(pagination,endpoint) %}
+    <ul class="pagination">
+        <li {% if not pagination.has_prev %} class="disabled"{% endif %}>
+            <a href="
+                    {% if pagination.has_prev %}{{ url_for(endpoint,page=pagination.page - 1) }}{% else %}#{% endif %}">&laquo;</a>
+        </li>
+    {% for p in pagination.iter_pages() %}
+    {% if p %}
+        {% if p==pagination.page %}
+            <li class="active">
+                <a href="{{ url_for(endpoint,page=p) }}">{{ p }}</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{{ url_for(endpoint,page=p) }}">{{ p }}</a>
+            </li>
+        {% endif %}
+    {% else %}
+    <li class="disabled">
+        <a href="#">&hellip;</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+    <li {% if not pagination.has_next %} class="disabled"{% endif %}>
+        <a href="{% if pagination.has_next %} {{ url_for(endpoint,page=pagination.page + 1,**kwargs) }}{% else %}# {% endif %}">&raquo;</a>
+    </li>
+    </ul>
+{% endmacro %}
+
+
+
+{% macro pagination_widget_blog(pagination,endpoint,current_user) %}
+    <ul class="pagination">
+        <li {% if not pagination.has_prev %} class="disabled"{% endif %}>
+            <a href="
+                    {% if pagination.has_prev %}{{ url_for(endpoint,page=pagination.page - 1,username=current_user.username) }}{% else %}#{% endif %}">&laquo;</a>
+        </li>
+    {% for p in pagination.iter_pages() %}
+    {% if p %}
+        {% if p==pagination.page %}
+            <li class="active">
+                <a href="{{ url_for(endpoint,page=p,username=current_user.username) }}">{{ p }}</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{{ url_for(endpoint,page=p,username=current_user.username) }}">{{ p }}</a>
+            </li>
+        {% endif %}
+    {% else %}
+    <li class="disabled">
+        <a href="#">&hellip;</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+    <li {% if not pagination.has_next %} class="disabled"{% endif %}>
+        <a href="{% if pagination.has_next %} {{ url_for(endpoint,page=pagination.page + 1,username=current_user.username,**kwargs) }}{% else %}# {% endif %}">&raquo;</a>
+    </li>
+    </ul>
+{% endmacro %}
+
+{% macro pagination_comment(pagination,endpoint,post_id,username) %}
+ <ul class="pagination">
+        <li {% if not pagination.has_pre %} class="disabled" {% endif %}>
+            <a href="{{ url_for(endpoint,page=pagination.page-1,username=username,id=post_id) }}">&laquo;</a>
+        </li>
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                {% if p== pagination.page %}
+                    <li>
+                        <a href="{{ url_for(endpoint,page=p,username=username,id=post_id) }}">{{ p }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ url_for(endpoint,page=p,username=username,id=post_id) }}">{{ p }}</a>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li class="disabled">
+                    <a href="#">&hellip;</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        <li {% if not pagination.has_next %} class="disabled"{% endif %}>
+            <a href="{% if pagination.has_next %}
+                {{ url_for(endpoint,page=pagination.page + 1,username=username,id=post_id) }}{% else %}# {% endif %}">&raquo;</a>
+        </li>
+    </ul>
+{% endmacro %}
+
+
+
+
+{% macro pagination_collected_post(pagination,endpoint,current_user) %}
+    <ul class="pagination">
+        <li {% if not pagination.has_pre %} class="disabled" {% endif %}>
+            <a href="{% if pagination.has_pre %} {{ url_for(endpoint,collect_page=pagination.page-1,username=current_user.username) }}{% else %}#{% endif%}">&laquo;</a>
+        </li>
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                    {% if p == pagination.page %}
+                        <li>
+                        <a href="{{ url_for(endpoint,collect_page=p,username=current_user.username) }}">{{ p }}</a>
+                        </li>
+                    {% else %}
+                         <li>
+                        <a href="{{ url_for(endpoint,collect_page=p,username=current_user.username) }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                 <li class="disabled">
+                    <a href="#">&hellip;</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    <li {% if not pagination.has_next %} class="disabled" {% endif %}>
+        <a {% if pagination.has_next %} {{ url_for(endpoint,collect_page=pagination.page+1,username=current_user.username) }}{% else %}#{% endif %}>&raquo;</a>
+    </li>
+    </ul>
+{% endmacro %}
+
+
+{% macro pagination_followeds(pagination,endpoint,current_user) %}
+    <ul class="pagination">
+        <li {% if not pagination.has_pre %} class="disabled" {% endif %}>
+            <a href="{% if pagination.has_pre %} {{ url_for(endpoint,followed_page=pagination.page-1,username=current_user.username) }}{% else %}#{% endif%}">&laquo;</a>
+        </li>
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                    {% if p == pagination.page %}
+                        <li>
+                        <a href="{{ url_for(endpoint,followed_page=p,username=current_user.username) }}">{{ p }}</a>
+                        </li>
+                    {% else %}
+                         <li>
+                        <a href="{{ url_for(endpoint,followed_page=p,username=current_user.username) }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                 <li class="disabled">
+                    <a href="#">&hellip;</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    <li {% if not pagination.has_next %} class="disabled" {% endif %}>
+        <a {% if pagination.has_next %} {{ url_for(endpoint,followed_page=pagination.page+1,username=current_user.username) }}{% else %}#{% endif %}>&raquo;</a>
+    </li>
+    </ul>
+{% endmacro %}
+
+
+{% macro pagination_category_posts(pagination,endpoint,category_name) %}
+    <ul class="pagination">
+        <li {% if not pagination.has_pre %} class="disabled" {% endif %}>
+            <a href="{% if pagination.has_pre %} {{ url_for(endpoint,page=pagination.page-1,category_name=category_name) }}{% else %}#{% endif%}">&laquo;</a>
+        </li>
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                    {% if p == pagination.page %}
+                        <li>
+                        <a href="{{ url_for(endpoint,page=p,category_name=category_name) }}">{{ p }}</a>
+                        </li>
+                    {% else %}
+                         <li>
+                        <a href="{{ url_for(endpoint,page=p,category_name=category_name) }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                 <li class="disabled">
+                    <a href="#">&hellip;</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    <li {% if not pagination.has_next %} class="disabled" {% endif %}>
+        <a {% if pagination.has_next %} {{ url_for(endpoint,page=pagination.page+1,category_name=category_name) }}{% else %}#{% endif %}>&raquo;</a>
+    </li>
+    </ul>
+{% endmacro %}
+
+
+{% macro pagination_followers(pagination,endpoint,current_user) %}
+    <ul class="pagination">
+        <li {% if not pagination.has_pre %} class="disabled" {% endif %}>
+            <a href="{% if pagination.has_pre %} {{ url_for(endpoint,follower_page=pagination.page-1,username=current_user.username) }}{% else %}#{% endif%}">&laquo;</a>
+        </li>
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                    {% if p == pagination.page %}
+                        <li>
+                        <a href="{{ url_for(endpoint,follower_page=p,username=current_user.username) }}">{{ p }}</a>
+                        </li>
+                    {% else %}
+                         <li>
+                        <a href="{{ url_for(endpoint,follower_page=p,username=current_user.username) }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                 <li class="disabled">
+                    <a href="#">&hellip;</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    <li {% if not pagination.has_next %} class="disabled" {% endif %}>
+        <a {% if pagination.has_next %} {{ url_for(endpoint,follower_page=pagination.page+1,username=current_user.username) }}{% else %}#{% endif %}>&raquo;</a>
+    </li>
+    </ul>
+{% endmacro %}
+
+
+{% macro pagination_users(pagination,endpoint) %}
+    <ul class="pagination">
+        <li {% if not pagination.has_pre %} class="disabled" {% endif %}>
+            <a href="{% if pagination.has_pre %} {{ url_for(endpoint,page=pagination.page-1) }}{% else %}#{% endif%}">&laquo;</a>
+        </li>
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                    {% if p == pagination.page %}
+                        <li>
+                        <a href="{{ url_for(endpoint,page=p) }}">{{ p }}</a>
+                        </li>
+                    {% else %}
+                         <li>
+                        <a href="{{ url_for(endpoint,page=p) }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                 <li class="disabled">
+                    <a href="#">&hellip;</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    <li {% if not pagination.has_next %} class="disabled" {% endif %}>
+        <a {% if pagination.has_next %} {{ url_for(endpoint,page=pagination.page+1) }}{% else %}#{% endif %}>&raquo;</a>
+    </li>
+    </ul>
+{% endmacro %}
+
+
+{% macro pagination_personal_posts(pagination,endpoint,current_user) %}
+    <ul class="pagination">
+        <li {% if not pagination.has_pre %} class="disabled" {% endif %}>
+            <a href="{% if pagination.has_pre %} {{ url_for(endpoint,personal_page=pagination.page-1,username=current_user.username) }}{% else %}#{% endif%}">&laquo;</a>
+        </li>
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                    {% if p == pagination.page %}
+                        <li>
+                        <a href="{{ url_for(endpoint,personal_page=p,username=current_user.username) }}">{{ p }}</a>
+                        </li>
+                    {% else %}
+                         <li>
+                        <a href="{{ url_for(endpoint,personal_page=p,username=current_user.username) }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                 <li class="disabled">
+                    <a href="#">&hellip;</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    <li {% if not pagination.has_next %} class="disabled" {% endif %}>
+        <a {% if pagination.has_next %} {{ url_for(endpoint,personal_page=pagination.page+1,username=current_user.username) }}{% else %}#{% endif %}>&raquo;</a>
+    </li>
+    </ul>
+{% endmacro %}
+
+
+
+
+
+

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% from "macros.html" import pagination_widget_main with context %}
+{% block page_content %}
+    <div class="col-lg-12 start" style="top: 150px;">
+    <h3 style=" text-align: center">评论管理</h3>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>评论</th>
+                    <th>评论作者</th>
+                    <th>评论时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for comment in comments %}
+            <tr>
+                <td class="counter"></td>
+                <td><a href="{{ url_for('admin.show_a_comment',id=comment.id) }}">{{ comment.body|striptags|truncate(length=10) }}</a></td>
+                <td>{{ comment.author_.username }}</td>
+                <td>{{ moment(comment.timestamp).format('LLL') }}</td>
+                <td>
+                    <form class="inline" method="post" action="{{ url_for('admin.admin_delete_comment',id=comment.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('确定删除此评论吗?');">
+                                删除
+                            </button>
+                        </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+            <div class="col-md-offset-4">
+            {{ pagination_widget_main(pagination,endpoint) }}
+        </div>
+    </div>
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/admin_posts.css') }}">
+{% endblock %}

@@ -1,0 +1,73 @@
+{% for comment in comments %}
+    <div>
+        <hr>
+        <h4>
+            <img src="{{ url_for('static',filename=real_avatar(comment.author_)) }}" style="width: 20px;height: 20px"><a href="{{ url_for('auth.display_other',username=comment.author_.username) }}">{{ comment.author_.username }}</a>回复
+            <img src="{{ url_for('static',filename=real_avatar(comment.author_)) }}" style="width: 20px;height: 20px"><a href="{{ url_for('auth.display_other',username=comment.author_.username) }}">
+                {{ post.author.username }}</a>:
+            <a href="{{ url_for('blog.reply',responded_id=comment.id,post_id=post.id) }}">回复</a>
+        </h4>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.body }}</p>
+        {% if comment_r[comment] %}
+            {% for reply in comment_r[comment] %}
+                {% if not is_list(reply,list) %}
+                    <h5>
+                        <img src="{{ url_for('static',filename=real_avatar(comment.author_)) }}" style="width: 20px;height: 20px"><a href="{{ url_for('auth.display_other',username=comment.author_.username) }}">{{ reply.replier.author_.username }}</a>回复
+                        <img src="{{ url_for('static',filename=real_avatar(comment.author_)) }}" style="width: 20px;height: 20px"><a href="{{ url_for('auth.display_other',username=comment.author_.username) }}">
+                            {{ comment.author_.username }}</a>:
+                        <a href="{{ url_for('blog.reply',responded_id=reply.replier.id,post_id=post.id) }}">回复</a>
+                     {% if reply.replier.author_.username == current_user.username %}
+                        <form class="inline" method="post"
+                              action="{{ url_for('blog.delete_comment_signal',post_id=post.id,comment_id=reply.replier.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('确定删除此评论吗?');">
+                                删除
+                            </button>
+                        </form>
+                    {% endif %}
+                    </h5>
+                    <p>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ reply.replier.body }}</p>
+
+                {% else %}
+                    {% for reply_l in reply %}
+                        <h5>
+                            <img src="{{ url_for('static',filename=real_avatar(comment.author_)) }}" style="width: 20px;height: 20px"><a href="{{ url_for('auth.display_other',username=comment.author_.username) }}">{{ reply_l.replier.author_.username }}</a>回复
+                            <img src="{{ url_for('static',filename=real_avatar(comment.author_)) }}" style="width: 20px;height: 20px"><a href="{{ url_for('auth.display_other',username=comment.author_.username) }}">
+                                {{ reply_l.replied.author_.username }}</a>:
+                            <a href="{{ url_for('blog.reply',responded_id=reply_l.replier.id,post_id=post.id) }}">回复</a>
+                         {% if reply_l.replier.author_.username == current_user.username %}
+                            <form class="inline" method="post"
+                                  action="{{ url_for('blog.delete_comment_signal',post_id=post.id,comment_id=reply_l.replier.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger btn-xs"
+                                        onclick="return confirm('确定删除此评论吗?');">
+                                    删除
+                                </button>
+                            </form>
+                        {% endif %}
+                        </h5>
+                        <p>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ reply_l.replier.body }}</p>
+
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if post.author.username == current_user.username or comment.author_.username == current_user.username %}
+            <form class="inline" method="post"
+                  action="{{ url_for('blog.delete_comment_signal',post_id=post.id,comment_id=comment.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('确定删除此评论吗?');">
+                    删除
+                </button>
+            </form>
+        {% endif %}
+        {% if loop.last %}
+            <hr>
+        {% endif %}
+    </div>
+{% endfor %}
+
+

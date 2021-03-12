@@ -1,0 +1,9 @@
+<div class="list-group col-lg-3" style="top: 200px; left: 80px">
+    {% for category in categories %}
+        <a class="list-group-item"
+           href="{{ url_for('blog.display_category_posts',category_name=inquire_category_name(category.category_name)) }}">{{ category.category_name }}
+            <small
+                    class="badge badge-success">{{ category.posts.count() }}</small></a>
+    {% endfor %}
+</div>
+

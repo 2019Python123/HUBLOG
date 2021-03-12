@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "macros.html" import pagination_users with context %}
+{% block page_content %}
+    <div class="col-lg-4 col-lg-offset-3" style="top: 50px">
+        {% for f in users %}
+            <div style="padding: 20px 24px 16px 24px;background-color: #ffffff;margin-bottom: 16px;">
+                <ul>
+                    <li style="list-style: none">
+ <span class="glyphicon glyphicon-user"><a class="label label-success "
+                                           href="{{ url_for('auth.display_other',username=f.username,flag='from_other',from_other=current_user.username) }}">{{ f.username }}</a></span>
+
+                    </li>
+                </ul>
+            </div>
+        {% endfor %}
+        {% if users %}
+            {{ pagination_users(pagination,endpoint) }}
+        {% else %}
+            <h1>查询无果............</h1>
+        {% endif %}
+    </div>
+{% endblock %}

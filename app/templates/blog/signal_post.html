@@ -1,0 +1,119 @@
+{# blog.show_signal_post #}
+{% extends "base.html" %}
+{% from "macros.html" import pagination_comment with context %}
+{% block content %}
+     {%   for message in get_flashed_messages() %}
+        <div class="alert alert-success">
+            {{ message }}
+            <button type="button" class="close"  data-dismiss="alert">&times;</button>
+        </div>
+    {% endfor %}
+    {% block page_content %}
+        <div class="posts col-lg-6 col-lg-offset-1">
+            <ul class="post-ul">
+                <li class="post">
+                    <h3>
+                        {{ post.title }}
+                    </h3>
+                    <h6>作者:{{ post.author.username }}</h6>
+                    <p>
+                        {{ post.body_html|safe }}
+                    </p>
+                    <small>
+                        <span>发表时间:{{ moment(post.timestamp).format('LLL') }}</span>
+                    </small>
+                </li>
+
+                <hr>
+                <table>
+                    <tr>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                data-target=".post_link_modal">分享
+                        </button>
+                    {% if not current_user.is_anonymous    %}
+                        {% if is_collect(post.id) %}
+                            <form class="inline" method="post"
+                                  action="{{ url_for('blog.cancel_collect_post',id=post.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确定收藏吗?');">
+                                    取消收藏
+                                </button>
+                            </form>
+                        {% else %}
+                            <form class="inline" method="post"
+                              action="{{ url_for('blog.collect_post',id=post.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确定收藏吗?');">
+                                收藏
+                            </button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <form class="inline" method="post"
+                              action="{{ url_for('blog.collect_post',id=post.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确定收藏吗?');">
+                                收藏
+                            </button>
+                            </form>
+                    {% endif %}
+                    </tr>
+                </table>
+                <div>
+                    <hr>
+                    {% if not is_mute(post) %}
+                    <p><a href="{{ url_for('auth.display_user') }}">{{ current_user.username }}</a>回复:<a href="{{ url_for('auth.display_other',username=post.author.username) }}">{{ post.author.username }}</a>
+                    <form action="{{ url_for('blog.comment',id=post.id,_external=True) }} "
+                          method="post">
+                        {{ form.csrf_token }}
+                        {{ form.text() }}
+                        {{ form.submit(class="btn btn-success") }}
+                    </form>
+                    </p>
+                    {% else %}
+                        <h3>博主关闭评论功能</h3>
+                    {% endif %}
+                </div>
+            <hr>
+                <small>
+                    <div>
+                    {% if is_show_comment(post) or post.author.id == current_user.id %}
+                        {% include "_comments.html" %}
+                        {% if comments %}
+                        {{ pagination_comment(pagination,endpoint,post.id,post.author.username) }}
+                        {% endif %}
+                    {% else %}
+                        <h3>对方未开放评论区的显示</h3>
+                    {% endif %}
+                    </div>
+                </small>
+
+                <div class="modal fade post_link_modal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">文章链接</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                           value="{{ url_for('blog.show_signal_post',id=post.id,username=post.author.username,_external=True) }}"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ul>
+        </div>
+        {% include "_aside.html" %}
+    {% endblock %}
+
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/post.css') }}">
+{% endblock %}

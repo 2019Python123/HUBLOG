@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block page_content %}
+    <div class="col-lg-4 col-md-offset-2" style="top: 200px">
+        <div class="row">
+            {{ comment.body }}
+        </div>
+        <div>
+            &puncsp;&puncsp;
+            ------------ {{ comment.author_.username }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{# main.index #}
+<div>
+    {% if posts %}
+        {% for post in posts %}
+            <div style="padding: 20px 24px 16px 24px;background-color: #ffffff;margin-bottom: 16px;">
+                <ul class="post-ul" style="list-style: none;">
+                    <li class="post">
+                        <h3 class="text-primary"><a
+                                href="{{ url_for('blog.show_signal_post',username=post.author.username,id =post.id) }}">{{ post.title }}</a>
+                        </h3>
+                        <p>{{ post.body_html|striptags|truncate }}
+                            <small>
+                                <a href="{{ url_for('blog.show_signal_post',username=post.author.username,id=post.id) }}">Read
+                                    More</a></small>
+                        </p>
+                        <small>
+                            Comments: <a
+                                href="{{ url_for('blog.show_signal_post',id=post.id,username=post.author.username) }}#comments"><span
+                                class="badge">{% if post.comments %} {{ post.comments.count() }}{% else %}
+                            0 {% endif %} </span></a>&nbsp;&nbsp;
+                            <a href="
+
+
+                                    {% if post.author.username != current_user.username %}{{ url_for('auth.display_other',username=post.author.username) }}
+
+
+                                        {% else %}{{ url_for('auth.display_user',username=post.author.username) }} {% endif %}">{{ post.author.username }}</a>&nbsp;&nbsp;
+                            <span class="float-right">{{ moment(post.timestamp).format('LL') }}</span>
+                            <span><a class="label label-primary"
+                                     href="{{ url_for('blog.display_category_posts',category_name=judge_category(post.id)) }}">{{ judge_category(post.id) }}</a></span>
+                        </small>
+                    </li>
+
+                </ul>
+
+            </div>
+        {% endfor %}
+
+        </div>
+        {% if posts %}
+            {{ macros.pagination_widget_main(pagination,endpoint) }}
+        {% endif %}
+    {% else %}
+        <h3>没有文章</h3>
+    {% endif %}
+
+
+
+
+
+

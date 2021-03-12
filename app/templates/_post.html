@@ -1,0 +1,75 @@
+{#blog.through_self#}
+<div class="posts col-lg-7">
+    <ul class="post-ul">
+        <li class="post">
+            <h3>
+                {{ post.title }}
+            </h3>
+            <h6>作者:{{ post.author.username }}</h6>
+            <p>
+                {{ post.body_html|safe }}
+            </p>
+            <small>
+                <span>发表时间:{{ moment(post.timestamp).format('LLL') }}</span>
+            </small>
+        </li>
+        <hr>
+        <table>
+            <tr>
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".post_link_modal">
+                    分享
+                </button>
+                <form class="inline" method="post" action="{{ url_for('blog.delete_post',id=post.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确定删除吗?');">
+                        删除
+                    </button>
+                </form>
+            </tr>
+        </table>
+        <small>
+            <div>
+                {% for comment in comments %}
+                    <div>
+                        <hr>
+                        <h5><img src="{{ url_for('static',filename=real_avatar(comment.author_)) }}" style="width: 20px;height: 20px"><a href="{{ url_for('auth.display_other',username=comment.author_.username) }}">{{ comment.author_.username }}</a>回复
+                            <img src="{{ url_for('static',filename=real_avatar(post.author)) }}" style="width: 20px;height: 20px"><a href="{{ url_for('auth.display_other',username=comment.author_.username) }}">{{ post.author.username }}</a>:</h5>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.body }}</p>
+                        <form class="inline" method="post" action="{{ url_for('blog.delete_comment',post_id=post.id,comment_id=comment.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('确定删除此评论吗?');">
+                                删除
+                            </button>
+                        </form>
+                    {% if loop.last %}
+                    <hr>
+                    {% endif %}
+                    </div>
+                {% endfor %}
+            {% if comments %}
+             {{ pagination_comment(pagination,endpoint,post.id) }}
+            {% endif %}
+            </div>
+        </small>
+        <div class="modal fade post_link_modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">文章链接</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" class="form-control"
+                                   value="{{ url_for('blog.show_signal_post',id=post.id,username=post.author.username,_external=True) }}"
+                                   readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ul>
+</div>
+{% include "_aside.html" %}

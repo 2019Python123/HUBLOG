@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block page_content %}
+    <div class="col-lg-5 col-lg-offset-3" style="border: 1px solid whitesmoke;background-color: whitesmoke;top:100px">
+        {{ wtf.quick_form(form) }}
+    </div>
+        
+    <script type="text/javascript">
+        $('#date').datepicker({
+            weekStart: 1,
+            autoclose: true,
+            daysOfWeekHighlighted: "0,6",
+            format: "yyyy/mm/dd",
+            language: "zh-CN"
+        });
+        </script>
+{% endblock %}
+
+

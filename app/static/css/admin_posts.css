@@ -1,0 +1,7 @@
+ .start{
+      counter-reset: No;
+    }
+.counter::before{
+    counter-increment: No;
+    content:counters(No,'.')'';
+}

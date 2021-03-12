@@ -1,0 +1,17 @@
+{# blog.edit #}
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+    写文章
+{% endblock %}
+{% block page_content %}
+    <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4" style="top: 200px;left: 500px;background-color: whitesmoke;border: 0 solid whitesmoke;margin: 0;">
+        <h3 style="text-align: center">编写文章</h3>
+        {{ wtf.quick_form(form) }}
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    {{ pagedown.include_pagedown() }}
+{% endblock %}

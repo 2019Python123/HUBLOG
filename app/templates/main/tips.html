@@ -1,0 +1,12 @@
+
+    {% if tar %}
+        {% if name == 'post' %}
+            {% for post in tar %}
+                <li>{{ post.title }}</li>
+            {% endfor %}
+        {% else %}
+            {% for user in tar %}
+                <li>{{ user.userame }}</li>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
